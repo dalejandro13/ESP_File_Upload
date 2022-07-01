@@ -9,7 +9,7 @@ los siguientes comandos se envian por la terminal de arduino para el microcontro
 
 ***leer archivo en determinadas lineas:
 [nombre del archivo].txt[inicio,fina]-s
-inicio: es un numero entero, comienzo de lectura
+inicio: es un numero entero, inicio de lectura
 final: es un numero entero, final de lectura
 NOTA: cada linea debe terminar en '\n'(final de linea)
 
@@ -21,7 +21,7 @@ NOTA 2: el texto que escribes debe terminar con -w
 NOTA 3: debes ingresar los 2 comandos en ese orden para poder subir el archivo
 
 ***otra forma de subir un archivo al FileSystem del ESP8266
-PASO 1: conectate a la red del ESP8266
+PASO 1: conectate a la red del ESP8266, la contraseña para conectarse es: FLX900-3
 PASO 2: ingresa la siguiente url en el navegador web: http://192.168.2.1/upload
 PASO 3: se abrira una pagina web y da clic en un boton que dice "Seleccionar archivo", luego se abre el explorador y selecciona el archivo txt deseado
 PASO 4: luego da clic en el boton que dice "Upload File" y espera un instante hasta que termine el proceso
