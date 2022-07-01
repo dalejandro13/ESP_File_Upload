@@ -78,60 +78,47 @@ void readFile(const char * path) {
 }
 
 void readCertainLine(const char * information){
-  String fileName = "", line = "", crAux = "", initial = "", ending = "";
+  String fileName = "", line = "", initial = "", ending = "";
   const char * path;
-  bool change = false;
-  char cr;
   int count = 0, initialNum = 0, endingNum = 0, countComma = 0;
   String inform(information);
-  for(int i = 0; i < inform.length(); i++){
-    if(inform[i] == '['){
-      change = true;
-    }
-    
-    if(!change){
-      if(inform[i] != ',' && inform[i] != '[' && inform[i] != ']'){
-        fileName += inform[i];
-      }
-    }
-    else{
-      line += inform[i];
-    }
-  }
-  
+
+  int inxInitial = inform.indexOf("[");
+  int inxMedium = inform.indexOf(",");
+  int inxFinal = inform.indexOf("]");
+
+  fileName = inform.substring(0, inxInitial);
+  line = inform.substring(inxInitial, inxFinal + 1);
+
+  //rutas_gmovil.txt[35,30]-s
+
   if(inform.indexOf("[") > 0 && inform.indexOf("]") > 0 && inform.indexOf(",") > 0){
-    change = false;
-    for(int j = 0; j < line.length(); j++){
-      if(line[j] == ','){
-        countComma++;
-        change = true;
-      }
-      if(!change){
-        if(line[j] != '[' && line[j] != ']' && line[j] != ',')
-          initial += String(line[j]);
-      }
-      else{
-        if(line[j] != '[' && line[j] != ']' && line[j] != ',')
-          ending += String(line[j]);
-      }
+    if(line.indexOf(",") > 0){
+      countComma++;
     }
-  
-    initialNum = abs(initial.toInt());
-    endingNum = abs(ending.toInt());
-    if(initialNum > endingNum){
-      int aux = initialNum;
-      initialNum = endingNum;
-      endingNum = aux;
-    }
-    else if(initialNum == endingNum){
-      countComma = 0;
+
+    if(countComma == 1){
+      inxInitial = line.indexOf("[");
+      inxMedium = line.indexOf(",");
+      inxFinal = line.indexOf("]");
+      initial = line.substring(inxInitial + 1, inxMedium);
+      ending = line.substring(inxMedium + 1, inxFinal);
+    
+      initialNum = abs(initial.toInt());
+      endingNum = abs(ending.toInt());
+      if(initialNum > endingNum){
+        int aux = initialNum;
+        initialNum = endingNum;
+        endingNum = aux;
+      }
+      else if(initialNum == endingNum){
+        countComma = 0;
+      }
     }
   }
   
   if(countComma == 1){
-    change = false;
     path = fileName.c_str();
-    change = false;
     Serial.printf("leyendo archivo: %s\n", path);
     File file = LittleFS.open(path, "r");
     if (!file) {
@@ -142,44 +129,15 @@ void readCertainLine(const char * information){
     if(line != ""){
       Serial.println("se lee lo siguiente: ");
       while (file.available()) {
-        cr = file.read();
-        crAux += cr;
-        if(cr == '\n'){ //si termina con nueva linea
-          count++;
-          for(int i = initialNum; i < endingNum; i++){
-            if(count >= initialNum && count <= endingNum){
-              change = true;
-              break;
-            }
-          }          
-          if(change){
-            change = false;
-            Serial.print(crAux);
-            crAux = "";
-          }
-          else{
-            crAux = "";
-          }        
-        }
-      }
-      
-      change = false;
-      if(crAux != ""){ //para imprimir el ultimo mensaje del archivo
+        String readLine = file.readStringUntil('\n');
         count++;
         for(int i = initialNum; i < endingNum; i++){
           if(count >= initialNum && count <= endingNum){
-            change = true;
+            Serial.println(readLine);
+            readLine = "";
             break;
           }
-        }
-        if(change){
-          change = false;
-          Serial.print(crAux);
-          crAux = "";
-        }
-        else{
-          crAux = "";
-        }
+        }                
       }
     }
     else{
@@ -191,7 +149,6 @@ void readCertainLine(const char * information){
     Serial.println("comando incorrecto, intentalo nuevamente");
   }
 }
-
 
 void writeFile(const char * path, const char * message) {
   Serial.printf("iniciando escritura en archivo: %s\n", path);
