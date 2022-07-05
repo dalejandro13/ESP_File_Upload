@@ -48,7 +48,7 @@ NOTA: el [espacio] es literal un espacio que debes dejar seguido de -f, aparecer
 ESP8266WiFiMulti wifiMulti;
 ESP8266WebServer server(80);
 File UploadFile;
-int blinking = 0, digital2 = 2;
+int blinking = 0;
 String data = "", pathFile = "", infoFile = "";
 String ssid = "RFAC-" + String(ESP.getChipId()), password = "FLX900-3", acum = "";
 
@@ -218,7 +218,6 @@ void formatFileSystem() {
 void setup(void){
   Serial.begin(9600);
   delay(2000);
-  pinMode(digital2, OUTPUT);
   IPAddress ip(192,168,2,1);
   IPAddress NMask(255,255,255,0);
   WiFi.softAPConfig(ip, ip, NMask);
